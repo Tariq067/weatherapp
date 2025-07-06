@@ -24,16 +24,49 @@
         <div class="details">
           <div id="humidity">
           <img src="/Images/percentage_11057026.png" class="detail-image" alt="" />
-          <span class="detail-text">60%</span>
+          <span class="detail-humidity">60%</span>
          </div>  
           <div id="wind">
            
           <img src="/Images/wind-direction_8691375.png" class="detail-image" alt="" />
-           <span class="wind">10 km/h </span>
+           <span class="detail-wind">10 km/h </span>
           </div>        
         </div>        
       
     </div>
-    <script src=""></script>
+    <script>
+      const apikey="dba254a8a5a54d93bc155700250906";
+      const apiurl = `https://api.weatherapi.com/v1/current.json?key=${apikey}&q=Karachi`;
+      const searchButton = document.getElementById("search-button");
+      const searchInput = document.getElementById("search-input");
+      const cityName = document.querySelector(".city");
+      const temperature = document.querySelector(".temp");
+      const weatherImage = document.querySelector(".weather-image");
+      const humidity = document.querySelector(".detail-humidity");
+      const windSpeed = document.querySelector(".detail-wind");
+    
+searchButton.addEventListener("click", async () => {
+    const searchQuery = searchInput.value;
+    if (searchQuery) {
+        const searchUrl = `https://api.weatherapi.com/v1/current.json?key=${apikey}&q=${searchQuery}`;
+        const searchResponse = await fetch(searchUrl);
+        const searchData = await searchResponse.json();
+        if (searchData.error) {
+            cityName.textContent = "No matching location found.";
+            temperature.textContent = "";
+            weatherImage.src = "";
+            humidity.textContent = "";
+            windSpeed.textContent = "";
+        } else {
+            cityName.textContent = searchData.location.name;
+            temperature.textContent = `${searchData.current.temp_c}°C`;
+            weatherImage.src = searchData.current.condition.icon;
+            humidity.textContent = `${searchData.current.humidity}%`;
+            windSpeed.textContent = `${searchData.current.wind_kph} km/h`;
+            searchInput.value = ""; // Clear the input field after search
+        }
+    }
+});
+    </script>
   </body>
 </html>
